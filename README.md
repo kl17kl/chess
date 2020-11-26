@@ -1,25 +1,24 @@
 # Chess Project: Classes
-2020-11-26 (15:04) : These classes will build the chess board and the functionality of its pieces. Once implemented, we should be able to play a pvp chess game.
+2020-11-26 (15:04) : These classes will build the chess board and the functionality of its pieces. Once implemented, we should be able to play a pvp chess game on a console (not on the GUI just yet).
 
 ## Packages
-* board: has classes Tile, EmptyTile, OccupiedTile, Move, activeMove, attackMove, and Board
-* pieces: has classes Piece, and each concrete class of Piece (x16)
-* player: has classes Player, WhitePlayer, and BlackPlayer
+* **board**: has classes Tile, EmptyTile, OccupiedTile, Move, activeMove, attackMove, and Board
+* **pieces**: has classes Piece, and each concrete class of Piece (x16)
+* **player**: has classes Player, WhitePlayer, and BlackPlayer
 
-## (Abstract) Tile
+## (Abstract Class) Tile
 **Package: Board**
 This class represents a tile on the chess board. There are 64 tiles on each board.
-> has coordinates (i.e. coord A3 = coord[3][1])
-> checkIfOccupied()
-> getPiece()
+* has coordinates (i.e. coord A3 = coord[3][1])
+`<checkIfOccupied()>` 
+`<getPiece()>`
 
-### (Concrete) EmptyTile
+### (Concrete Class) EmptyTile
 This class represents an empty, unoccupied tile.
-> checkIfOccuied() : returns false;
-> getPiece() : returns null;
+`<checkIfOccuied() : returns false;>`
+`<getPiece() : returns null;>`
 
-### (Concrete) OccupiedTile
+### (Concrete Class) OccupiedTile
 This class represents an occupied tile.
-> checkIfOccuied() : returns true;
-> getPiece() : returns piece on tile;
-
+`<checkIfOccuied() : returns false;>`
+`<getPiece() : returns piece on tile;>`
