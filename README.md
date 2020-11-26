@@ -49,3 +49,45 @@ This class allows for a piece to make a legal move that does not involve attacki
 This class allows for a piece to make a legal move that does not involve attacking another piece.  
 `<move() : make a new instance of a board with that attack move being made (removing the attacked piece from the board and changing its state to dead/inactive).>`
 
+## (Class) Board
+**Package: Board**
+This class represents the actual chess board. The board class has the following:  
+* list of tiles
+* collection of white pieces
+* collection of black pieces
+* list of active pieces
+`<createBoard()>`
+`<setPieces()>`
+
+## (Abstract Class) Player
+**Package: Player**  
+This class represents a player (either human or computer player).  
+- has alliance (white/black)
+`<getAlliance()>`  
+`<getActivePieces()>`  
+`<isMoveLegal()>`  
+`<isInCheck()>`  
+`<isInCheckMate()>`  
+`<isInStaleMate()>`  
+`<isCastled()>`  
+`<makeMove()>`
+
+### (Concrete Class) WhitePlayer
+`<getAlliance() : return "white";>`  
+`<getActivePieces() : return list of active pieces (not dead)>`  
+`<isMoveLegal() : return true if legal>` This is the player's move, not necessarily the piece's move.  
+`<isInCheck() : returns true if the opposite alliance can attack the player's King piece with any of their pieces>`  
+`<isInCheckMate() : returns true if player's King piece is in check and cannot make any legal moves to break out of its check state>`  
+`<isInStaleMate() : returns true if player's King piece is not in check and cannot make any legal moves>`  
+`<isCastled() : returns true if player chooses to castle, and perform the swap when castled>` look into this for the rules of castling..  
+`<makeMove() : performs the White Player's move>`
+
+### (Concrete Class) BlackPlayer
+`<getAlliance() : return "Black";>`  
+`<getActivePieces() : return list of active pieces (not dead)>`  
+`<isMoveLegal() : return true if legal>` This is the player's move, not necessarily the piece's move.  
+`<isInCheck() : returns true if the opposite alliance can attack the player's King piece with any of their pieces>`  
+`<isInCheckMate() : returns true if player's King piece is in check and cannot make any legal moves to break out of its check state>`  
+`<isInStaleMate() : returns true if player's King piece is not in check and cannot make any legal moves>`  
+`<isCastled() : returns true if player chooses to castle, and perform the swap when castled>` look into this for the rules of castling..  
+`<makeMove() : performs the Black Player's move>`
