@@ -23,4 +23,11 @@ public abstract class Piece {
     public String getAlliance() {
         return this.alliance;
     }
+
+    /** Set the new position of the moved piece. */
+    private void setPosition(int row, int col) {
+        this.position[0] = row;
+        this.position[1] = col;
+    }
+
 }
