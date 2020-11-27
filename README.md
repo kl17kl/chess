@@ -26,7 +26,9 @@ This class represents an occupied tile.
 ## (Abstract Class) Piece
 **Package: Pieces**  
 This class represents a chess piece entity. There are 6 different types of pieces.  
-- has a position, state (i.e. active/dead), and alliance (white/black)  
+- has a position  
+- has a state (i.e. active/dead)  
+- has a alliance (white/black)  
 `<legalMoves()>`
 
 ### (Concrete Classes) King, Rook, Bishop, Queen, Knight, and Pawn
@@ -55,16 +57,16 @@ This class represents the actual chess board. The board class has the following:
 * list of tiles
 * collection of white pieces
 * collection of black pieces
-* list of active pieces
+* list of active pieces  
 `<createBoard()>`
 `<setPieces()>`
 
 ## (Abstract Class) Player
 **Package: Player**  
 This class represents a player (either human or computer player).  
-- has alliance (white/black)
-- has type (computer/player)
-- has boardSide (top/bottom of board)
+- has alliance (white/black)  
+- has type (computer/player)  
+- has boardSide (top/bottom of board)  
 `<getAlliance()>`  
 `<getActivePieces()>`  
 `<isMoveLegal()>`  
