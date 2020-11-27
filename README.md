@@ -58,7 +58,7 @@ This class represents the actual chess board. The board class has the following:
 * collection of white pieces
 * collection of black pieces
 * list of active pieces  
-`<createBoard()>`
+`<createBoard()>`  
 `<setPieces()>`
 
 ## (Abstract Class) Player
