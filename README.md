@@ -63,6 +63,8 @@ This class represents the actual chess board. The board class has the following:
 **Package: Player**  
 This class represents a player (either human or computer player).  
 - has alliance (white/black)
+- has type (computer/player)
+- has boardSide (top/bottom of board)
 `<getAlliance()>`  
 `<getActivePieces()>`  
 `<isMoveLegal()>`  
