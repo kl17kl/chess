@@ -30,4 +30,9 @@ public abstract class Piece {
         this.position[1] = col;
     }
 
+    /** Get the position of the piece. */
+    public int[] getPosition() {
+        return this.position;
+    }
+
 }

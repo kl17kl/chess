@@ -1,6 +1,7 @@
 package pieces;
 
 import board.*;
+import player.*;
 import java.util.LinkedList;
 import java.util.List;
 

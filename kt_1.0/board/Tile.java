@@ -4,6 +4,7 @@ import pieces.*;
 
 public abstract class Tile {
     private int[] coords; //the tile's coordinates
+    private Piece piece;
 
     public Tile(int[] coordinates) {
         this.coords = coordinates;
@@ -12,6 +13,11 @@ public abstract class Tile {
     /** Checks to see if the tile is occupied by another piece. */
     public boolean checkIfOccupied() {
         return true;
+    }
+
+    /** Sets the piece at the tile's coordinates. */
+    public void setPiece(Piece piece) {
+        this.piece = piece;
     }
 
     /** Returns the piece at the tile's coordinates. */

@@ -4,6 +4,7 @@ import pieces.*;
 
 public class OccupiedTile extends Tile{
     private int[] coords; //the tile's coordinates
+    private Piece piece;
 
     public OccupiedTile(int[] coordinates) {
         super(coordinates);
@@ -15,8 +16,8 @@ public class OccupiedTile extends Tile{
     }
 
     /** Returns the piece at the tile's coordinates. */
-    public Piece getPiece(Board board) {
-        return board.getActivePiece(this.coords);
+    public Piece getPiece() {
+        return this.piece;
     }
 
 }
