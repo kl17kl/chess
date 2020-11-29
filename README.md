@@ -1,5 +1,5 @@
 # Chess Project: Classes
-2020-11-26 (15:04) : These classes will build the chess board and the functionality of its pieces. Once implemented, we should be able to play a pvp chess game on a console (not on the GUI just yet).
+2020-11-26 (15:04) : These classes will build the chess board and the functionality of its pieces. Once implemented, we should be able to play a pvp chess game on a console (not on the GUI just yet).  
 2020-11-29 (14:17) : Updating and correcting class descriptions.
 
 ## Packages
