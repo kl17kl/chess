@@ -11,7 +11,7 @@
 **Package: Board**  
 This class represents a tile on the chess board. There are 64 tiles on each board.  
 - has coordinates (i.e. coord A3 = coord[3][1])  
-- has piece
+- has piece  
 `<checkIfOccupied()>`  
 `<setPiece()>`  
 `<getPiece()>`  
