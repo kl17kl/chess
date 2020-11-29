@@ -33,7 +33,7 @@ This class represents a chess piece entity. There are 6 different types of piece
 - has a position  
 - has a state (i.e. active/dead)  
 - has a alliance (white/black)  
-- has a board
+- has a board  
 `<legalMoves() : unique for each piece>`  
 `<getAlliance()>`  
 `<setPosition()>`  
@@ -101,7 +101,7 @@ This class represents a player (either human or computer).
 `<isInCheck()>`  
 `<isInCheckMate()>`  
 `<isInStaleMate()>`  
-`<isCastled()>`
+`<isCastled()>`  
 `<makeMove()>`
 
 ### (Concrete Class) BlackPlayer
@@ -111,5 +111,5 @@ This class represents a player (either human or computer).
 `<isInCheck()>`  
 `<isInCheckMate()>`  
 `<isInStaleMate()>`  
-`<isCastled()>`
+`<isCastled()>`  
 `<makeMove()>`
