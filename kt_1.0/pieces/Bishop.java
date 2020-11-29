@@ -18,7 +18,7 @@ public class Bishop extends Piece {
      * Generates a list of the piece's legal moves given its current position.
      * @return the integer array list of legal moves
      */
-    private List<int[]> legalMoves() {
+    public List<int[]> legalMoves() {
         // stores all legal moves
         this.legalMoves = new LinkedList<>();
         int row = this.position[0];
@@ -63,12 +63,6 @@ public class Bishop extends Piece {
                 else break;
             }
         }
-    }
-
-    /** Set the new position of the moved piece. */
-    private void setPosition(int row, int col) {
-        this.position[0] = row;
-        this.position[1] = col;
     }
 
 }

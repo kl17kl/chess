@@ -15,7 +15,7 @@ public abstract class Piece {
     }
 
     /** Generates a list of the piece's legal moves given its current position. */
-    private List<int[]> legalMoves() {
+    public List<int[]> legalMoves() {
         return null;
     }
 
@@ -24,8 +24,8 @@ public abstract class Piece {
         return this.alliance;
     }
 
-    /** Set the new position of the moved piece. */
-    private void setPosition(int row, int col) {
+    /** Set the position of the moved piece. */
+    public void setPosition(int row, int col) {
         this.position[0] = row;
         this.position[1] = col;
     }

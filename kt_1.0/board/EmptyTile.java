@@ -15,7 +15,7 @@ public class EmptyTile extends Tile{
     }
 
     /** Returns the piece at the tile's coordinates. */
-    private Piece getPiece() {
+    public Piece getPiece() {
         return null;
     }
 

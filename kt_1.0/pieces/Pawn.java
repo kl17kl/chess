@@ -20,7 +20,7 @@ public class Pawn extends Piece {
      * Generates a list of the piece's legal moves given its current position.
      * @return the integer array list of legal moves
      */
-    private List<int[]> legalMoves() {
+    public List<int[]> legalMoves() {
         // stores all legal moves
         this.legalMoves = new LinkedList<>();
         int row = this.position[0];
@@ -56,19 +56,13 @@ public class Pawn extends Piece {
     }
 
     /** Set the pawn's board side as top or bottom so it knows which direction to move in. */
-    private void setMoveDirection(Board board, Player player) {
-        if (player.getBoardSide().isEquals("top")) {
+    public void setMoveDirection(Board board, Player player) {
+        if (player.getBoardSide().equals("top")) {
             this.moveDirection = 1;
         }
         else {
             this.moveDirection = -1;
         }
-    }
-
-    /** Set the new position of the moved piece. */
-    private void setPosition(int row, int col) {
-        this.position[0] = row;
-        this.position[1] = col;
     }
 
 }

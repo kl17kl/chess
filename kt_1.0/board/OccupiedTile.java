@@ -15,7 +15,7 @@ public class OccupiedTile extends Tile{
     }
 
     /** Returns the piece at the tile's coordinates. */
-    private Piece getPiece(Board board) {
+    public Piece getPiece(Board board) {
         return board.getActivePiece(this.coords);
     }
 
