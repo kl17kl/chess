@@ -1,6 +1,7 @@
 package board;
 
 import pieces.*;
+import player.*;
 import java.util.*;
 
 public class Board {
@@ -9,14 +10,15 @@ public class Board {
     private Tile[][] boardTiles;
     private List<Piece> deadPieces; //the dead pieces
     private String whiteSide; // either top/bot side of the board
-    private List<Piece> whitePieces;
-    private List<Piece> blackPieces;
+    private Player p1, p2;
 
-    public Board() {
+    public Board(Player p1, Player p2) {
+        this.p1 = p1;
+        this.p2 = p2;
     }
 
     /** Creates the board in its initial state. */
-    private void createBoard() {
+    public void createBoard() {
         // set-up the empty tiles
         for (int i=2; i<rows; i++) {
             for (int j=0; j<cols; j++) {
@@ -29,88 +31,35 @@ public class Board {
         deadPieces = new LinkedList<>();
     }
 
-    /** Set-up the chess board with its pieces */
+    /** Set-up the initial board with the occupied tiles and their pieces. */
     private void setUpBoardPieces() {
-        // determine what side has what alliance
-        boolean isWhite;
-        String topAlliance = "";
-        String botAlliance = "";
-        if (whiteSide.equals("top")) {
-            topAlliance = "white";
-            botAlliance = "black";
+        // set up top pawns
+        for (int i=0; i<cols; i++) {
+            int[] coords = new int[]{1,i};
+            this.setTile(new OccupiedTile(coords),coords);
+            this.getTile(1,i).setPiece(p2.getActivePiece(i));
         }
-        else {
-            topAlliance = "black";
-            botAlliance = "white";
+        // set up remaining top pieces
+        for (int i=0; i<cols; i++) {
+            int[] coords = new int[]{0,i};
+            this.setTile(new OccupiedTile(coords),coords);
+            this.getTile(0,i).setPiece(p2.getActivePiece(i+8));
         }
-        // initiate lists of white and black pieces
-        whitePieces = new LinkedList<>();
-        blackPieces = new LinkedList<>();
-        // set up pawn pieces on both sides - starting at the second-top row
-        int i = 1;
-        String alliance = topAlliance;
-        for (int k=0; k<2; k++) {
-            for (int j = 0; j < 8; j++) {
-                int[] coords = new int[]{i, j};
-                OccupiedTile aTile = new OccupiedTile(coords);
-                Pawn aPawn = new Pawn(coords, alliance, this);
-                aTile.setPiece(aPawn);
-                this.boardTiles[i][j] = aTile;
-                // add pawn to list of white/black pieces
-                isWhite = alliance.equals("white") ? whitePieces.add(aPawn) : blackPieces.add(aPawn);
-            }
-            // update row to 6 to fill in the bottom row of pawns
-            i = 6;
-            alliance = botAlliance;
+        // set up bottom pawns
+        for (int i=0; i<cols; i++) {
+            int[] coords = new int[]{6,i};
+            this.setTile(new OccupiedTile(coords),coords);
+            this.getTile(6,i).setPiece(p1.getActivePiece(i));
         }
-        // set up the remaining pieces
-        i = 0;
-        alliance = topAlliance;
-        for (int k=0; k<2; k++) {
-            for (int j = 0; j < cols; j++) {
-                int[] coords = new int[]{i, j};
-                OccupiedTile aTile = new OccupiedTile(coords);
-                switch (j) {
-                    case (0):
-                    case (7):
-                        Rook aRook = new Rook(coords, alliance, this);
-                        aTile.setPiece(aRook);
-                        isWhite = alliance.equals("white") ? whitePieces.add(aRook) : blackPieces.add(aRook);
-                        break;
-                    case (1):
-                    case (6):
-                        Knight aKnight = new Knight(coords, alliance, this);
-                        aTile.setPiece(aKnight);
-                        isWhite = alliance.equals("white") ? whitePieces.add(aKnight) : blackPieces.add(aKnight);
-                        break;
-                    case (2):
-                    case (5):
-                        Bishop aBishop = new Bishop(coords, alliance, this);
-                        aTile.setPiece(aBishop);
-                        isWhite = alliance.equals("white") ? whitePieces.add(aBishop) : blackPieces.add(aBishop);
-                        break;
-                    case (3):
-                        Queen aQueen = new Queen(coords, alliance, this);
-                        aTile.setPiece(aQueen);
-                        isWhite = alliance.equals("white") ? whitePieces.add(aQueen) : blackPieces.add(aQueen);
-                        break;
-                    case (4):
-                        King aKing = new King(coords, alliance, this);
-                        aTile.setPiece(aKing);
-                        isWhite = alliance.equals("white") ? whitePieces.add(aKing) : blackPieces.add(aKing);
-                        break;
-                    default:
-                        break;
-                }
-                this.boardTiles[i][j] = aTile;
-            }
-            // update row to 7 to fill in the bottom pieces
-            i=7;
-            alliance = botAlliance;
+        // set up remaining bottom pieces
+        for (int i=0; i<cols; i++) {
+            int[] coords = new int[]{7,i};
+            this.setTile(new OccupiedTile(coords),coords);
+            this.getTile(7,i).setPiece(p1.getActivePiece(i+8));
         }
     }
 
-    /** Gets the tile at a given position. */
+    /** Determine which side is the white side. */
     public void setWhiteSide(String side) {
         // if white player is on the top
         if (side.equals("top")) {
@@ -131,7 +80,7 @@ public class Board {
                 this.setTile(new EmptyTile(coords),coords);
                 // ..unless a piece is positioned on that tile
                 for (Piece p : pieces) {
-                    if (p.getPosition().equals(coords)) {
+                    if (Arrays.equals(p.getPosition(), coords)) {
                         OccupiedTile oTile = new OccupiedTile(coords);
                         this.setTile(oTile,coords);
                         oTile.setPiece(p);
@@ -169,19 +118,19 @@ public class Board {
         return this.boardTiles;
     }
 
+    /** Get player one. */
+    public Player getP1() {
+        return p1;
+    }
+
+    /** Get player two. */
+    public Player getP2() {
+        return p2;
+    }
+
     /** Adds an attacked piece to the list of dead pieces. */
     public void addDeadPiece(Piece piece) {
         deadPieces.add(piece);
-    }
-
-    /** Gets the list of all the white pieces on the board. */
-    public List<Piece> getWhitePieces() {
-        return whitePieces;
-    }
-
-    /** Gets the list of all the black pieces on the board. */
-    public List<Piece> getBlackPieces() {
-        return blackPieces;
     }
 
 }
