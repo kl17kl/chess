@@ -8,6 +8,7 @@ public abstract class Piece {
     private String alliance; // white or black
     private String state; // active or dead
     private Board board;
+    private String name;
 
     public Piece(int[] position, String alliance, Board board) {
         this.position = position;
@@ -16,6 +17,9 @@ public abstract class Piece {
         this.state = "active";
     }
 
+    public String getName() {
+        return this.name;
+    }
     /** Generates a list of the piece's legal moves given its current position. */
     public List<int[]> legalMoves() {
         return null;

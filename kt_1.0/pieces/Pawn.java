@@ -1,20 +1,19 @@
 package pieces;
 
 import board.*;
-import player.*;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Pawn extends Piece {
+public class Bishop extends Piece {
     private int[] position; // the piece's current position
     private String alliance; // white or black
     private Board board;
     private List<int[]> legalMoves;
-    private boolean hasMoved; // true if a pawn has moved from its starting position
-    private int moveDirection; // the side the pawn starts at (top/bot)
+    private String name;
 
-    public Pawn(int[] position, String alliance, Board board) {
+    public Bishop(int[] position, String alliance, Board board) {
         super(position, alliance, board);
+        this.name = "Bishop";
     }
 
     /**
@@ -27,42 +26,47 @@ public class Pawn extends Piece {
         int row = this.position[0];
         int col = this.position[1];
 
-        // starting pawn move conditions
-        if (!this.hasMoved) {
-            // check if pawn can move +2 tiles
-            if (!this.board.getTile(row+2*moveDirection,col).checkIfOccupied()) {
-                this.legalMoves.add(this.board.getTile(row,col).getCoords());
-            }
-            this.hasMoved = true;
-        }
-        // check if pawn can move +1 tile and is within bounds of the chess board
-        if (0 <= row+moveDirection && row+moveDirection <= board.rows) {
-            if (!this.board.getTile(row+moveDirection,col).checkIfOccupied()) {
-                this.legalMoves.add(this.board.getTile(row, col).getCoords());
+        // check each diagonal direction
+        checkDiagonals(row,col,-1,-1); // check NW direction
+        checkDiagonals(row,col,-1,1);  // check NE direction
+        checkDiagonals(row,col,1,1);   // check SE direction
+        checkDiagonals(row,col,1,-1);  // check SW direction
 
-                // check if pawn can move through an attack and is within bounds of the chess board
-                if (0 <= col - 1) {
-                    if (!this.board.getTile(row + moveDirection, col - 1).getPiece().getAlliance().equals(this.alliance)) {
-                        this.legalMoves.add(this.board.getTile(row, col).getCoords());
-                    }
-                }
-                if (col + 1 <= board.cols) {
-                    if (!this.board.getTile(row + moveDirection, col + 1).getPiece().getAlliance().equals(this.alliance)) {
-                        this.legalMoves.add(this.board.getTile(row, col).getCoords());
-                    }
-                }
-            }
-        }
         return this.legalMoves;
     }
 
-    /** Set the pawn's board side as top or bottom so it knows which direction to move in. */
-    public void setMoveDirection(Board board, Player player) {
-        if (player.getBoardSide().equals("top")) {
-            this.moveDirection = 1;
-        }
-        else {
-            this.moveDirection = -1;
+    /**
+     * Checks all diagonal tiles in a certain direction to see if a legal move can be made.
+     * @param row           the piece's row coordinate
+     * @param col           the piece's col coordinate
+     * @param rowIncr  the vertical direction of the diagonal (up/down)
+     * @param colIncr  the horizontal direction of the diagonal (right/left)
+     */
+    private void checkDiagonals(int row, int col, int rowIncr, int colIncr) {
+        boolean meetsOpposite = false;
+        // initially check within the bounds of the chess board
+        if (0 <= row+rowIncr && row+rowIncr <= board.rows && 0 <= col+colIncr && col+colIncr <= board.cols) {
+            row += rowIncr;
+            col += colIncr;
+            // if unoccupied or if occupied by opposing alliance
+            while (!this.board.getTile(row,col).checkIfOccupied() || !meetsOpposite &&
+                    !this.board.getTile(row,col).getPiece().getAlliance().equals(this.alliance)) {
+                // prevent this piece from being able to jump over an opposing alliance piece
+                if (!this.board.getTile(row,col).getPiece().getAlliance().equals(this.alliance)) {
+                    meetsOpposite = true;
+                }
+                // cannot attack the opponent's King piece.
+                if (!this.board.getTile(row,col).getPiece().getName().equals("King")) {
+                    this.legalMoves.add(this.board.getTile(row,col).getCoords());
+                }
+
+                // look at the next diagonal tile
+                if (0 <= row+rowIncr && row+rowIncr <= board.rows && 0 <= col+colIncr && col+colIncr <= board.cols) {
+                    row += rowIncr;
+                    col += colIncr;
+                }
+                else break;
+            }
         }
     }
 
