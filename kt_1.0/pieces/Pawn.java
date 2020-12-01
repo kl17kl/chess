@@ -12,9 +12,11 @@ public class Pawn extends Piece {
     private List<int[]> legalMoves;
     private boolean hasMoved; // true if a pawn has moved from its starting position
     private int moveDirection; // the side the pawn starts at (top/bot)
+    private String name;
 
     public Pawn(int[] position, String alliance, Board board) {
         super(position, alliance, board);
+        this.name = "Pawn";
     }
 
     /**
@@ -42,12 +44,14 @@ public class Pawn extends Piece {
 
                 // check if pawn can move through an attack and is within bounds of the chess board
                 if (0 <= col - 1) {
-                    if (!this.board.getTile(row + moveDirection, col - 1).getPiece().getAlliance().equals(this.alliance)) {
+                    if (!this.board.getTile(row + moveDirection, col - 1).getPiece().getAlliance().equals(this.alliance) &&
+                    !this.board.getTile(row + moveDirection, col-1).getPiece().getName().equals("King")) {
                         this.legalMoves.add(this.board.getTile(row, col).getCoords());
                     }
                 }
                 if (col + 1 <= board.cols) {
-                    if (!this.board.getTile(row + moveDirection, col + 1).getPiece().getAlliance().equals(this.alliance)) {
+                    if (!this.board.getTile(row + moveDirection, col + 1).getPiece().getAlliance().equals(this.alliance) &&
+                            !this.board.getTile(row + moveDirection, col-1).getPiece().getName().equals("King")) {
                         this.legalMoves.add(this.board.getTile(row, col).getCoords());
                     }
                 }
