@@ -9,11 +9,9 @@ public class King extends Piece {
     private String alliance; // white or black
     private Board board;
     private List<int[]> legalMoves;
-    private String name;
 
     public King(int[] position, String alliance, Board board) {
         super(position, alliance, board);
-        this.name = "King";
     }
 
     /**
@@ -34,9 +32,7 @@ public class King extends Piece {
                     // if unoccupied or if occupied by opposing alliance
                     if (!this.board.getTile(i,j).checkIfOccupied() ||
                             !this.board.getTile(i,j).getPiece().getAlliance().equals(this.alliance)) {
-                        if (!this.board.getTile(i,j).getPiece().getName().equals("King")) {
-                            this.legalMoves.add(this.board.getTile(i, j).getCoords());
-                        }
+                        this.legalMoves.add(this.board.getTile(i,j).getCoords());
                     }
                 }
             }

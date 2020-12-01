@@ -7,15 +7,15 @@ import java.util.List;
 
 public abstract class Player {
 
-    private String boardSide;   // top/bot
-    private String type;        // comp/human
+    private String alliance; // white/black
+    private String boardSide; // top/bot
+    private String type; // comp/human
     private Board board;
-    private List<Moves> legalMoves;
-    private List<Piece> pieces;
-    private boolean isInCheck;
-    private boolean castled;
+    private List<Piece> activePieces;
+    private String state; // check/checkmate/stalemate/castled
 
-    public Player(String boardSide, String type, Board board, List<Moves> legalMoves) {
+    public Player(String alliance, String boardSide, String type, Board board) {
+        this.alliance = alliance;
         this.boardSide = boardSide;
         this.type = type;
         this.board = board;
@@ -29,7 +29,41 @@ public abstract class Player {
     }
 
     /** Generate the player's pieces based on if they are on the top or bottom side of the board. */
-    abstract void generatePieces(int pawnRow, int pieceRow);
+    private void generatePieces(int pawnRow, int pieceRow) {
+        // add all the pawns to the list
+        for (int i = 0; i< board.cols; i++) {
+            int coords[] = new int[]{pawnRow,i};
+            this.activePieces.add(i, new Pawn(coords, alliance, board));
+        }
+        // add the remaining pieces to the list
+        int i = 8;
+        for (int j = 0; j < board.cols; j++) {
+            int coords[] = new int[]{pieceRow, j};
+            switch (j) {
+                case (0):
+                case (7):
+                    this.activePieces.add(i, new Rook(coords, alliance, board));
+                    break;
+                case (1):
+                case (6):
+                    this.activePieces.add(i, new Knight(coords, alliance, board));
+                    break;
+                case (2):
+                case (5):
+                    this.activePieces.add(i, new Bishop(coords, alliance, board));
+                    break;
+                case (3):
+                    this.activePieces.add(i, new Queen(coords, alliance, board));
+                    break;
+                case(4):
+                    this.activePieces.add(i, new King(coords, alliance, board));
+                    break;
+                default:
+                    break;
+            }
+            i++;
+        }
+    }
 
     /** Get the alliance of the player (white/black) */
     public String getAlliance() {

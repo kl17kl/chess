@@ -9,11 +9,9 @@ public class Knight extends Piece {
     private String alliance; // white or black
     private Board board;
     private List<int[]> legalMoves;
-    private String name;
 
     public Knight(int[] position, String alliance, Board board) {
         super(position, alliance, board);
-        this.name = "Knight";
     }
 
     /**
@@ -49,16 +47,10 @@ public class Knight extends Piece {
             if (0 <= row+rowLength && row+rowLength <= board.rows) {
                 // if col is within bounds and is not occupied with the same alliance
                 if (0 <= col-1 && !this.board.getTile(row+rowLength,col-1).getPiece().getAlliance().equals(this.alliance)) {
-                    // cannot take the opponent's King piece
-                    if (!this.board.getTile(row+rowLength,col-1).getPiece().getName().equals("King")) {
-                        this.legalMoves.add(this.board.getTile(row + rowLength, col - 1).getCoords());
-                    }
+                    this.legalMoves.add(this.board.getTile(row+rowLength, col-1).getCoords());
                 }
                 if (col+1 <= board.cols && !this.board.getTile(row+rowLength,col+1).getPiece().getAlliance().equals(this.alliance)) {
-                    // cannot take the opponent's King piece
-                    if (!this.board.getTile(row+rowLength,col+1).getPiece().getName().equals("King")) {
-                        this.legalMoves.add(this.board.getTile(row + rowLength, col+1).getCoords());
-                    }
+                    this.legalMoves.add(this.board.getTile(row+rowLength, col+1).getCoords());
                 }
             }
         }
@@ -68,16 +60,10 @@ public class Knight extends Piece {
             if (0 <= col+colLength && col+colLength <= board.cols) {
                 // if row is within bounds and is not occupied with the same alliance
                 if (0 <= row-1 && !this.board.getTile(row-1,col+colLength).getPiece().getAlliance().equals(this.alliance)) {
-                    // cannot take the opponent's King piece
-                    if (!this.board.getTile(row-1,col+colLength).getPiece().getName().equals("King")) {
-                        this.legalMoves.add(this.board.getTile(row-1, col+colLength).getCoords());
-                    }
+                    this.legalMoves.add(this.board.getTile(row-1, col+colLength).getCoords());
                 }
                 if (row+1 <= board.cols && !this.board.getTile(row+1,col+colLength).getPiece().getAlliance().equals(this.alliance)) {
-                    // cannot take the opponent's King piece
-                    if (!this.board.getTile(row+1,col+colLength).getPiece().getName().equals("King")) {
-                        this.legalMoves.add(this.board.getTile(row+1, col+colLength).getCoords());
-                    }
+                    this.legalMoves.add(this.board.getTile(row+1, col+colLength).getCoords());
                 }
             }
         }
