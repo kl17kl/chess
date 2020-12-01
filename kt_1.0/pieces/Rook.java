@@ -9,9 +9,11 @@ public class Rook extends Piece {
     private String alliance; // white or black
     private Board board;
     private List<int[]> legalMoves;
+    private Sting name;
 
     public Rook(int[] position, String alliance, Board board) {
         super(position, alliance, board);
+        this.name = "Rook";
     }
 
     /**
@@ -54,8 +56,10 @@ public class Rook extends Piece {
                 if (!this.board.getTile(row,col).getPiece().getAlliance().equals(this.alliance)) {
                     meetsOpposite = true;
                 }
-                this.legalMoves.add(this.board.getTile(row,col).getCoords());
-
+                if (!this.board.getTile(row,col).getPiece().getName().equals("King")) {
+                    this.legalMoves.add(this.board.getTile(row,col).getCoords());
+                }
+               
                 // look at the next diagonal tile
                 if (0 <= row+rowIncr && row+rowIncr <= board.rows && 0 <= col+colIncr && col+colIncr <= board.cols) {
                     row += rowIncr;
