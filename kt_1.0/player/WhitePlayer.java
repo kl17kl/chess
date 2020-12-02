@@ -12,8 +12,10 @@ public class WhitePlayer extends Player {
     private String type; //comp/human
     private Board board;
     private List<Piece> activePieces;
+    private Boolean enpassFlag;
 
     public WhitePlayer(String alliance, String boardSide, String type, Board board) {
+        this.enpassFlag = false;
         super (alliance, boardSide, type, board);
         // generate the player's list of active pieces
         if (boardSide.equals("top")) {

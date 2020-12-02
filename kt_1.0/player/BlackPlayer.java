@@ -13,8 +13,11 @@ public class BlackPlayer extends Player {
     private Board board;
     private List<Piece> pieces;
     private String state; // check/checkmate/stalemate/castled
+    private Boolean enpassFlag;
+
 
     public BlackPlayer(String alliance, String boardSide, String type, Board board) {
+        this.enpassFlag = false;
         super (alliance, boardSide, type, board);
         // generate the player's list of active pieces
         if (boardSide.equals("top")) {

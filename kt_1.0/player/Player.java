@@ -13,6 +13,7 @@ public abstract class Player {
     private Board board;
     private List<Piece> activePieces;
     private String state; // check/checkmate/stalemate/castled
+    private Boolean enpassFlag; //En passant flag
 
     public Player(String alliance, String boardSide, String type, Board board) {
         this.alliance = alliance;
@@ -26,6 +27,10 @@ public abstract class Player {
         else {
             generatePieces(6,7);
         }
+    }
+
+    public boolean getFlag() {
+        return this.enpassFlag; 
     }
 
     /** Generate the player's pieces based on if they are on the top or bottom side of the board. */
