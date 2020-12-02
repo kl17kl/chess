@@ -91,46 +91,44 @@ public class BlackPlayer extends Player {
         return this.pieces.get(index);
     }
 
-    /** Check if the player's move is a legal move. */
-    public boolean isMoveLegal(Piece piece, Tile destinationTile) {
-        // if player is in Check they must get out of check
-        if (this.state.equals("check")) {
-/////////////////AH. so much work.
-        }
-        if (piece.legalMoves().contains(destinationTile.getCoords())) {
-            return true;
-        }
-        return false;
-    }
-
     /** The player makes their move. */
-    public Board makeMove(Piece piece, Tile destinationTile, Board board) {
-        Board newBoard = new Board(board.getP1(), board.getP2());
-        // if the opponent is occupying the destination tile
-        if (destinationTile.checkIfOccupied()) {
-            AttackMove attack = new AttackMove();
-            newBoard = attack.move(piece, destinationTile, board);
-
-            /**
-             * ##this should belong to the attack move method:
-             * int[] initialCoords = piece.getPosition();
-            int[] destinationCoords = tile.getPiece().getPosition();
-            // move player's piece to their destination tile
-            newBoard.getTile(destinationCoords[0],destinationCoords[1]).setPiece(piece);
-            piece.setPosition(destinationCoords[0],destinationCoords[1]);
-            // update opponent's attacked piece's status to dead
-            Piece deadPiece = newBoard.getTile(destinationCoords[0],destinationCoords[1]).getPiece();
-            newBoard.addDeadPiece(deadPiece);
-            deadPiece.setState("dead");
-            // remove piece from its initial position
-            newBoard.setTile(new EmptyTile(initialCoords),initialCoords);*/
-
-        } // if the piece is moving to an empty tile
-        else {
-           ActiveMove aMove = new ActiveMove();
-           newBoard = aMove.move(piece, destinationTile, board);
+    public void makeMove(Piece piece, String coords) {
+        int col = -1;
+        char letterCol = coords.charAt(0);
+        char row = coords.charAt(1);
+        //turn destination into coords
+        switch (letterCol) {
+            case ('A'):
+                col = 0;
+                break;
+            case ('B'):
+                col = 1;
+                break;
+            case ('C'):
+                col = 2;
+                break;
+            case ('D'):
+                col = 3;
+                break;
+            case ('E'):
+                col = 4;
+                break;
+            case ('F'):
+                col = 5;
+                break;
+            case ('G'):
+                col = 6;
+                break;
+            case ('H'):
+                col = 7;
+                break;
+            default:
+                break;
         }
-        return newBoard;
+        int[] destination = new int[]{(int)row, col};
+        Move aMove = new Move(this.board, piece, this.board.getTile(destination[0],destination[1]));
+        aMove.setPlayer(this);
+        aMove.movePiece();
     }
 
     /**
