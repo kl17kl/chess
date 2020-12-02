@@ -28,7 +28,9 @@ public abstract class Player {
             generatePieces(6,7);
         }
     }
-
+    public void setFlag(boolean val) {
+        this.enpassFlag = val;
+    }
     public boolean getFlag() {
         return this.enpassFlag; 
     }
