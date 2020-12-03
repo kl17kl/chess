@@ -13,10 +13,20 @@ public class Pawn extends Piece {
     private boolean hasMoved; // true if a pawn has moved from its starting position
     private int moveDirection; // the side the pawn starts at (top/bot)
     private String name;
+    private Boolean enpassFlag; //En passant flag
 
     public Pawn(int[] position, String alliance, Board board) {
         super(position, alliance, board);
         this.name = "Pawn";
+        this.enpassFlag = false;
+    }
+
+    public void setFlag(boolean val) {
+        this.enpassFlag = val;
+    }
+
+    public boolean getFlag() {
+        return this.enpassFlag;
     }
 
     /**
