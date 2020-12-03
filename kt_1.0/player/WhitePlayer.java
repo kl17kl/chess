@@ -141,6 +141,7 @@ public class WhitePlayer extends Player {
         }
         int[] destination = new int[]{(int)row, col};
         Move aMove = new Move(this.board, piece, this.board.getTile(destination[0],destination[1]));
+        aMove.setPlayer(this);
         aMove.movePiece();
     }
 

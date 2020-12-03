@@ -9,6 +9,7 @@ public abstract class Piece {
     private String state; // active or dead
     private Board board;
     private String name;
+    private Boolean enpassFlag; //En passant flag
 
     public Piece(int[] position, String alliance, Board board) {
         this.position = position;
@@ -16,6 +17,15 @@ public abstract class Piece {
         this.board = board;
         this.state = "active";
     }
+
+    public void setFlag(boolean val) {
+        this.enpassFlag = val;
+    }
+
+    public boolean getFlag() {
+        return this.enpassFlag;
+    }
+
 
     public String getName() {
         return this.name;
