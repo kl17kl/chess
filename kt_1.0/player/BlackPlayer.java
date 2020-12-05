@@ -2,8 +2,7 @@ package player;
 
 import board.*;
 import pieces.*;
-
-import java.util.List;
+import java.util.*;
 
 public class BlackPlayer extends Player {
 
@@ -64,6 +63,88 @@ public class BlackPlayer extends Player {
         }
     }
 
+    public Board doPawnJump(int[] move, Board board) {
+        Pawn enemyPawn;
+        // the player's Pawn piece
+        Piece pawn = board.getTile(move[0],move[1]).getPiece();
+        // check right adjacent side for opponent Pawn
+        if (move[3] + 1 <= board.cols) {
+            if (board.getTile(move[2], move[3] + 1).getPiece().getName().equals("Pawn")
+                    && !board.getTile(move[2], move[3] + 1).getPiece().getAlliance().equals(pawn.getAlliance())) {
+                // update the opponent pawn's legal moves
+                enemyPawn = (Pawn) board.getTile(move[2], move[3] + 1).getPiece();
+                if (move[0] == 6) move[0] = 5;
+                else if (move[0] == 1) move[0] = 2;
+                enemyPawn.setFlag(true);
+                enemyPawn.legalMoves().add(move);
+                board.getTile(move[2],move[3]+1).setPiece(enemyPawn);
+            }
+        }
+        // check left adjacent side for opponent Pawn
+        if (move[3] - 1 <= board.cols) {
+            if (board.getTile(move[2], move[3] - 1).getPiece().getName().equals("Pawn")
+                    && !board.getTile(move[2], move[3] - 1).getPiece().getAlliance().equals(pawn.getAlliance())) {
+                // update the opponent pawn's legal moves
+                enemyPawn = (Pawn) board.getTile(move[2], move[3] - 1).getPiece();
+                enemyPawn.setFlag(true);
+                enemyPawn.legalMoves().add(move);
+                board.getTile(move[2],move[3]-1).setPiece(enemyPawn);
+            }
+        }
+        // update the new board with the Pawn move
+        int[] endCoords = new int[]{move[0],move[1]};
+        int[] startCoords = new int[]{move[2],move[3]};
+        board.setTile(new EmptyTile(startCoords),startCoords);
+        board.setTile(new OccupiedTile(endCoords),endCoords);
+        return board;
+    }
+
+    public Board doPromotion(int promoChoice, int[] move, Board board) {
+        Pawn pawn = (Pawn) board.getTile(move[0],move[1]).getPiece();
+        switch (promoChoice) {
+            case (1):
+                Queen queen = new Queen(pawn.getPosition(),pawn.getAlliance(),board);
+                board.getTile(move[2],move[3]).setPiece(queen);
+                break;
+            case (2):
+                Knight knight = new Knight(pawn.getPosition(),pawn.getAlliance(),board);
+                board.getTile(move[2],move[3]).setPiece(knight);
+                break;
+            case (3):
+                Rook rook = new Rook(pawn.getPosition(),pawn.getAlliance(),board);
+                board.getTile(move[2],move[3]).setPiece(rook);
+                break;
+            case (4):
+                Bishop bishop = new Bishop(pawn.getPosition(),pawn.getAlliance(),board);
+                board.getTile(move[2],move[3]).setPiece(bishop);
+                break;
+            default:
+                break;
+        }
+        // update pawn's initial position to empty
+        int[] coords = new int[]{move[0],move[1]};
+        board.setTile(new EmptyTile(coords),coords);
+        return board;
+    }
+
+    /** Perform en-passant. Remove the opponent piece that we are passing. */
+    public Board doEnPassant(int[] move, Board board) {
+        Pawn pawn = (Pawn) board.getTile(move[0],move[1]).getPiece();
+        // if we are on the top side
+        if (move[2] == 2) {
+            int[] emptyCoords = new int[]{move[2]+1,move[3]};
+            board.getTile(move[2],move[3]).setPiece(pawn);
+            board.setTile(new EmptyTile(emptyCoords),emptyCoords);
+        }
+        // if we are on the bottom side
+        if (move[2] == 5) {
+            int[] emptyCoords = new int[]{move[2]-1,move[3]};
+            board.getTile(move[2],move[3]).setPiece(pawn);
+            board.setTile(new EmptyTile(emptyCoords),emptyCoords);
+        }
+        return board;
+    }
+
     /** Get the alliance of the player (white/black) */
     public String getAlliance() {
         return "black";
@@ -105,13 +186,16 @@ public class BlackPlayer extends Player {
         return false;
     }*/
 
-    /** The player makes their move. */
-    public void makeMove(Piece piece, String coords) {
+    public Board makeMove(int[] move, Board board) {
+        Piece piece = board.getTile(move[0],move[1]).getPiece();
+        Move aMove = new Move(board, piece, move);
+        board = aMove.movePiece();
+        return board;
+    }
+
+    private int getLetter(char letter) {
         int col = -1;
-        char letterCol = coords.charAt(0);
-        char row = coords.charAt(1);
-        //turn destination into coordinates
-        switch (letterCol) {
+        switch (letter) {
             case ('A'):
                 col = 0;
                 break;
@@ -139,10 +223,7 @@ public class BlackPlayer extends Player {
             default:
                 break;
         }
-        int[] destination = new int[]{(int)row, col};
-        Move aMove = new Move(this.board, piece, this.board.getTile(destination[0],destination[1]));
-        aMove.setPlayer(this);
-        aMove.movePiece();
+        return col;
     }
 
     /** Check if the player is in check state. */

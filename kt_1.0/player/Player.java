@@ -2,8 +2,7 @@ package player;
 
 import board.*;
 import pieces.*;
-
-import java.util.List;
+import java.util.*;
 
 public abstract class Player {
 
@@ -57,12 +56,21 @@ public abstract class Player {
     }
 
     /** Check if the player's move is a legal move. */
-    public boolean isMoveLegal() {
+    public boolean isMoveLegal(int[] move, Board board) {
         return false;
     }
 
+    /** Performs a pawn jump for the player and updates the opponent's pawn's legal moves. */
+    public Board doPawnJump(int[] move, Board board) { return board; }
+
+    /** Performs the pawn promotion and updates the board. */
+    public Board doPromotion(int promoChoice, int[] move, Board board) { return board; }
+
+    /** Executes en-passant. */
+    public Board doEnPassant(int[] move, Board board) { return board; }
+
     /** The player makes their move. */
-    public void makeMove() {}
+    public Board makeMove(int[] move, Board board) { return board;}
 
     /** Check if the player is in check. */
     public boolean isInCheck() {
