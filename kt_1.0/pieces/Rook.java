@@ -5,21 +5,44 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Rook extends Piece {
-    private int[] position; // the piece's current position
-    private String alliance; // white or black
+    private int[] position;     // the piece's current position
+    private String alliance;    // white or black
     private Board board;
     private List<int[]> legalMoves;
-    private Sting name;
+    private boolean hasMoved;
 
     public Rook(int[] position, String alliance, Board board) {
-        super(position, alliance, board);
-        this.name = "Rook";
+        this.position = position;
+        this.alliance = alliance;
+        this.board = board;
+        this.hasMoved = false;
+    }
+
+    @Override
+    public String getName() {
+        return "Rook";
+    }
+
+    public String getAlliance() {
+        return this.alliance;
+    }
+
+    @Override
+    public void setPosition(int row, int col) {
+        this.position[0] = row;
+        this.position[1] = col;
+    }
+
+    @Override
+    public int[] getPosition() {
+        return this.position;
     }
 
     /**
      * Generates a list of the piece's legal moves given its current position.
      * @return the integer array list of legal moves
      */
+    @Override
     public List<int[]> legalMoves() {
         // stores all legal moves
         this.legalMoves = new LinkedList<>();
@@ -31,7 +54,6 @@ public class Rook extends Piece {
         checkDirection(row,col,1,0); // check straight down
         checkDirection(row,col,0,-1); // check straight left
         checkDirection(row,col,0,1); // check straight right
-
         return this.legalMoves;
     }
 
@@ -46,7 +68,7 @@ public class Rook extends Piece {
     private void checkDirection(int row, int col, int rowIncr, int colIncr) {
         boolean meetsOpposite = false;
         // initially check within the bounds of the chess board
-        if (0 <= row+rowIncr && row+rowIncr <= board.rows && 0 <= col+colIncr && col+colIncr <= board.cols) {
+        if (0 <= row+rowIncr && row+rowIncr <= 7 && 0 <= col+colIncr && col+colIncr <= 7) {
             row += rowIncr;
             col += colIncr;
             // if unoccupied or if occupied by opposing alliance
@@ -56,18 +78,24 @@ public class Rook extends Piece {
                 if (!this.board.getTile(row,col).getPiece().getAlliance().equals(this.alliance)) {
                     meetsOpposite = true;
                 }
-                if (!this.board.getTile(row,col).getPiece().getName().equals("King")) {
-                    this.legalMoves.add(this.board.getTile(row,col).getCoords());
-                }
-               
+                this.legalMoves.add(this.board.getTile(row,col).getCoords());
+
                 // look at the next diagonal tile
-                if (0 <= row+rowIncr && row+rowIncr <= board.rows && 0 <= col+colIncr && col+colIncr <= board.cols) {
+                if (0 <= row+rowIncr && row+rowIncr <= 7 && 0 <= col+colIncr && col+colIncr <= 7) {
                     row += rowIncr;
                     col += colIncr;
                 }
                 else break;
             }
         }
+    }
+
+    public boolean hasMoved() {
+        return this.hasMoved;
+    }
+
+    public void setHasMoved() {
+        this.hasMoved = true;
     }
 
 }

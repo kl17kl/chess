@@ -2,41 +2,35 @@ package player;
 
 import board.*;
 import pieces.*;
-
-import java.util.List;
+import java.util.*;
 
 public class WhitePlayer extends Player {
 
     private String boardSide;   // top/bot
+    private int playerNum;      // P1/P2
     private String type;        // comp/human
     private Board board;
     private List<Move> legalMoves;
     private List<Piece> pieces;
-    private boolean isInCheck;
-    private boolean castled;
 
-    public WhitePlayer(String boardSide, String type, Board board, List<Move> legalMoves) {
-        super (boardSide, type, board, legalMoves);
-        // generate the player's list of active pieces
-        if (boardSide.equals("top")) {
-            generatePieces(1,0);
-        }
-        else {
-            generatePieces(6,7);
-        }
-        this.isInCheck = false;
+    public WhitePlayer(String boardSide, int playerNum, String type) {
+        this.boardSide = boardSide;
+        this.playerNum = playerNum;
+        this.type = type;
+        pieces = new LinkedList<>();
     }
 
     /** Generate the player's pieces based on if they are on the top or bottom side of the board. */
-    public void generatePieces(int pawnRow, int pieceRow) {
+    @Override
+    public void generatePieces(int pawnRow, int pieceRow, Board board) {
         // add all the pawns to the list
-        for (int i = 0; i< board.cols; i++) {
+        for (int i = 0; i<8; i++) {
             int coords[] = new int[]{pawnRow,i};
             this.pieces.add(i, new Pawn(coords, "white", board));
         }
         // add the remaining pieces to the list
         int i = 8;
-        for (int j = 0; j < board.cols; j++) {
+        for (int j = 0; j < 8; j++) {
             int coords[] = new int[]{pieceRow, j};
             switch (j) {
                 case (0):
@@ -64,104 +58,100 @@ public class WhitePlayer extends Player {
         }
     }
 
-    /** Get the alliance of the player (white/black) */
-    public String getAlliance() {
-        return "white";
+    public void setUpPieces(Board board) {
+        // generate the player's list of active pieces
+        if (this.boardSide.equals("top")) {
+            generatePieces(1,0, board);
+        }
+        else {
+            generatePieces(6,7, board);
+        }
     }
 
-    /** Get the side of the board of the player (top/bot). */
-    public String getBoardSide() {
-        return this.boardSide;
-    }
-
-    /** Get the type of the player (comp/human). */
-    public String getType() {
-        return this.type;
-    }
-
-    /** Get the player's list of pieces. */
+    /** Get the player's list of active pieces. */
+    @Override
     public List<Piece> getPieces() {
         return this.pieces;
     }
 
-    /** Get the player's piece at a given position. */
+    /** Get the player's active pieces at a given position. */
+    @Override
     public Piece getPiece(int index) {
         return this.pieces.get(index);
     }
 
-    /** Check if the player's move is a legal move. */
-    public boolean isMoveLegal(Move move) {
-        return this.legalMoves.contains(move);
+    /** Get the alliance of the player (white/black) */
+    @Override
+    public String getAlliance() {
+        return "white";
     }
 
-    /** Check if player has any escape moves when in check. *//*
-    protected boolean hasEscapeMoves() {
-        for (final Move move: this.legalMoves) {
-            final MoveTransition transition = makeMove(move);
-            if (transition.getMoveStatus().isDone()) {
-                return true;
+    @Override
+    public String getBoardSide() { return this.boardSide; }
+
+    /** Check if the player is in check. */
+    @Override
+    public boolean isInCheck(Board board) {
+        List<int[]> legalMoves;
+        for (Piece opponentPiece : board.getOpponent(this).getPieces()) {
+            legalMoves = opponentPiece.legalMoves();
+            for (int[] opponentMove : legalMoves) {
+                if (Arrays.equals(opponentMove, this.getPiece(12).getPosition())) return true;
             }
         }
         return false;
-    }*/
-
-    /** The player makes their move. */
-    public void makeMove(Piece piece, String coords) {
-        int col = -1;
-        char letterCol = coords.charAt(0);
-        char row = coords.charAt(1);
-        //turn destination into coordinates
-        switch (letterCol) {
-            case ('A'):
-                col = 0;
-                break;
-            case ('B'):
-                col = 1;
-                break;
-            case ('C'):
-                col = 2;
-                break;
-            case ('D'):
-                col = 3;
-                break;
-            case ('E'):
-                col = 4;
-                break;
-            case ('F'):
-                col = 5;
-                break;
-            case ('G'):
-                col = 6;
-                break;
-            case ('H'):
-                col = 7;
-                break;
-            default:
-                break;
-        }
-        int[] destination = new int[]{(int)row, col};
-        Move aMove = new Move(this.board, piece, this.board.getTile(destination[0],destination[1]));
-        aMove.setPlayer(this);
-        aMove.movePiece();
     }
 
-    /** Check if the player is in check state. */
-    public boolean isInCheck(Board board) {
-        return this.isInCheck;
-    }
-
-    /** Check if the player is in checkmate. *//*
+    /** Check if the player is in checkmate. */
+    @Override
     public boolean isInCheckMate(Board board) {
-        return this.isInCheck && !hasEscapeMoves();
+        return this.isInCheck(board) && !hasEscapeMoves();
     }
 
-    *//** Check if the player is in stalemate. *//*
-    public boolean isInStaleMate() {
-        return !this.isInCheck && !hasEscapeMoves();
+    /** Check if the player is in stalemate. */
+    @Override
+    public boolean isInStaleMate(Board board) {
+        return !this.isInCheck(board) && !hasEscapeMoves();
     }
-*/
-    /** Check if the player is castled. */
-    public boolean isCastled() {
-        return this.castled;
+
+    @Override
+    public boolean hasEscapeMoves() {
+        // 1) Can we move the King out of check?
+        List<int[]> kingMoves = this.getPiece(12).legalMoves();
+        Player opponent = this.board.getOpponent(this);
+
+        // check if King has any legal moves that aren't any of the opponent's legal moves
+        for (Piece p : opponent.getPieces()) {
+            for (int[] opponentMove : p.legalMoves()) {
+                for (int[] kingMove : this.getPiece(12).legalMoves()) {
+                    if (opponentMove.equals(kingMove)) kingMoves.remove(kingMove);
+                }
+            }
+        }
+        if (kingMoves.size() > 0) return true;
+            // 2) Can we block the attacking piece from the King?
+        else {
+            for (Piece piece : this.getPieces()) {
+                for (int[] move : piece.legalMoves()) {
+                    for (Piece opponentPiece : opponent.getPieces()) {
+                        for (int[] opponentMove : opponentPiece.legalMoves()) {
+                            // if a piece's legal move = opponent piece's legal move
+                            if (opponentMove.equals(move)) {
+                                Board transitionBoard = this.board;
+                                if (transitionBoard.getTile(move[0],move[1]).checkIfOccupied()) {
+                                    transitionBoard.getTile(move[0],move[1]).setPiece(piece);
+                                }
+                                else {
+                                    transitionBoard.setTile(new EmptyTile(piece.getPosition()),piece.getPosition());
+                                }
+                                if (!this.isInCheck(transitionBoard)) return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
+
 }

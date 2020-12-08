@@ -5,21 +5,43 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Bishop extends Piece {
-    private int[] position; // the piece's current position
-    private String alliance; // white or black
+    private int[] position;     // the piece's current position
+    private String alliance;    // white or black
     private Board board;
     private List<int[]> legalMoves;
-    private String name;
 
     public Bishop(int[] position, String alliance, Board board) {
-        super(position, alliance, board);
-        this.name = "Bishop";
+        this.position = position;
+        this.alliance = alliance;
+        this.board = board;
+    }
+
+    @Override
+    public String getName() {
+        return "Bishop";
+    }
+
+    @Override
+    public String getAlliance() {
+        return this.alliance;
+    }
+
+    @Override
+    public void setPosition(int row, int col) {
+        this.position[0] = row;
+        this.position[1] = col;
+    }
+
+    @Override
+    public int[] getPosition() {
+        return this.position;
     }
 
     /**
      * Generates a list of the piece's legal moves given its current position.
      * @return the integer array list of legal moves
      */
+    @Override
     public List<int[]> legalMoves() {
         // stores all legal moves
         this.legalMoves = new LinkedList<>();
@@ -31,7 +53,6 @@ public class Bishop extends Piece {
         checkDiagonals(row,col,-1,1);  // check NE direction
         checkDiagonals(row,col,1,1);   // check SE direction
         checkDiagonals(row,col,1,-1);  // check SW direction
-
         return this.legalMoves;
     }
 
@@ -69,5 +90,4 @@ public class Bishop extends Piece {
             }
         }
     }
-
 }

@@ -5,21 +5,43 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Queen extends Piece {
-    private int[] position; // the piece's current position
-    private String alliance; // white or black
+    private int[] position;     // the piece's current position
+    private String alliance;    // white or black
     private Board board;
     private List<int[]> legalMoves;
-    private String name; 
 
     public Queen(int[] position, String alliance, Board board) {
-        super(position, alliance, board);
-        this.name = "Queen";
+        this.position = position;
+        this.alliance = alliance;
+        this.board = board;
+    }
+
+    @Override
+    public String getName() {
+        return "Queen";
+    }
+
+    @Override
+    public String getAlliance() {
+        return this.alliance;
+    }
+
+    @Override
+    public void setPosition(int row, int col) {
+        this.position[0] = row;
+        this.position[1] = col;
+    }
+
+    @Override
+    public int[] getPosition() {
+        return this.position;
     }
 
     /**
      * Generates a list of the piece's legal moves given its current position.
      * @return the integer array list of legal moves
      */
+    @Override
     public List<int[]> legalMoves() {
         // stores all legal moves
         this.legalMoves = new LinkedList<>();
@@ -37,7 +59,6 @@ public class Queen extends Piece {
         checkDirection(row,col,1,0); // check straight down
         checkDirection(row,col,0,-1); // check straight left
         checkDirection(row,col,0,1); // check straight right
-
         return this.legalMoves;
     }
 
@@ -62,10 +83,8 @@ public class Queen extends Piece {
                 if (!this.board.getTile(row,col).getPiece().getAlliance().equals(this.alliance)) {
                     meetsOpposite = true;
                 }
-                if (!this.board.getTile(row,col).getPiece().getName().equals("King")) {
-                    this.legalMoves.add(this.board.getTile(row,col).getCoords());
-                }
-               
+                this.legalMoves.add(this.board.getTile(row,col).getCoords());
+
                 // look at the next diagonal tile
                 if (0 <= row+rowIncr && row+rowIncr <= board.rows && 0 <= col+colIncr && col+colIncr <= board.cols) {
                     row += rowIncr;
@@ -75,5 +94,4 @@ public class Queen extends Piece {
             }
         }
     }
-
 }

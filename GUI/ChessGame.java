@@ -7,42 +7,64 @@ import board.*;
 
 public class chessGame {
 
-    public Player p1, p2;
-    public String p1type, p2type, p1alliance, p2alliance;
-    public Board board;
-    public printBoard printboard;
+    private Player p1, p2;
+    private String p1type, p2type, p1alliance, p2alliance;
+    private Board board;
 
     public chessGame() {
         // set-up player settings
         Scanner in = new Scanner(System.in);
+        board = new Board();
         playerSettings(in);
 
         // confirm settings
-        System.out.println("Continue with these settings?");
+        /*System.out.println("Continue with these settings?");
         System.out.println("Player 1: "+p1type+": "+p1alliance);
         System.out.println("Player 2: "+p2type+": "+p2alliance);
         System.out.println("1.Continue\t2.Quit");
-        int proceed = in.nextInt();
+*/
+        // int proceed = in.nextInt();
 
         // player chooses to continue to game
-        if (proceed == 1) {
-            // print initial board
+        //if (proceed == 1) {
+        if (true) {
+            p1.setUpPieces(board);
+            p2.setUpPieces(board);
+            board.setP1(p1);
+            board.setP2(p2);
             board.createBoard();
-            printboard = new printBoard(board);
+            board.printBoard();
 
             System.out.println("White player makes first move.\nEnter moves as [from coords] [to coords] (i.e. A4 A6)");
             // loop through the game
-            while (!p1.isInCheckMate() && !p1.isInStaleMate() && !p2.isInCheckMate() && !p2.isInStaleMate()) {
+            while (!p1.isInCheckMate(board) && !p1.isInStaleMate(board) && !p2.isInCheckMate(board) && !p2.isInStaleMate(board)) {
+                // player 1's turn:
                 System.out.println("Player 1's turn.");
                 takeTurn(p1, in);
-                printboard = new printBoard(board);
+                board.printBoard();
+                // check for check/checkmate/stalemate
+                if (p2.isInCheckMate(board)) {
+                    System.out.println("Player 2 is in CheckMate!");
+                    break;
+                }
+                if (p2.isInStaleMate(board)) break;
+                if (p2.isInCheck(board)) System.out.println("Player 2 is in Check.");
+                // player 2's turn:
                 System.out.println("Player 2's turn.");
                 takeTurn(p2, in);
-                printboard = new printBoard(board);
+                // check for check/checkmate/stalemate
+                if (p1.isInCheckMate(board)) {
+                    System.out.println("Player 1 is in CheckMate!");
+                    break;
+                }
+                if (p1.isInStaleMate(board)) break;
+                if (p1.isInCheck(board)) System.out.println("Player 1 is in Check.");
+                board.printBoard();
             }
             // end of game
-            if (p1.isInStaleMate() || p1.isInCheckMate()) System.out.println("Congratulations! Player 2 wins!");
-            else System.out.println("Congratulations! Player 1 wins!");
+            if (p1.isInCheckMate(board)) System.out.println("Congratulations! Player 2 wins!");
+            else if (p2.isInCheckMate(board)) System.out.println("Congratulations! Player 1 wins!");
+            else if (p1.isInStaleMate(board) || p2.isInStaleMate(board)) System.out.println("Stalemate - draw!");
         }
     }
 
@@ -85,14 +107,20 @@ public class chessGame {
                             board = p.doEnPassant(moveCoords, board);
                         }
                         // reset all pawn's flags to false at end of turn
-                        for (Piece piece : p.getActivePieces()) piece.setFlag(false);
-                        break;
+                        for (Piece piece : p.getPieces()) piece.setFlag(false);
+                    }
+                    // if player wishes to castle
+                    if (board.getTile(moveCoords[0], moveCoords[1]).getPiece().getName().equals("King") && moveCoords[0] == moveCoords[2]) {
+                        King king = (King) board.getTile(moveCoords[0], moveCoords[1]).getPiece();
+                        if (moveCoords[3] == 2 || moveCoords[3] == 6) {
+                            board = p.doCastling(moveCoords, king, board);
+                        }
                     }
                     // for any other legal move
                     else {
                         board = p.makeMove(moveCoords, board);
-                        break;
                     }
+                    break;
                 }
             }
             // if user input is invalid
@@ -129,50 +157,49 @@ public class chessGame {
      */
     private void playerSettings(Scanner in) {
         System.out.println("___CHESS GAME___");
-        System.out.println("PLAYER ONE:\nChoose player type.\n1.Player\t2.Computer");
+ /*       System.out.println("PLAYER ONE:\nChoose player type.\n1.Player\t2.Computer");
         int onetype = in.nextInt();
         if (onetype ==1) p1type = "player";
         if (onetype ==2) p1type = "computer";
 
-        System.out.println("Choose alliance.\n1.White\t2.Black");
+        System.out.println("Choose alliance for player 1:\n1.White\t2.Black");
         int onealliance = in.nextInt();
-        if (onealliance == 1) p1alliance = "white";
-        if (onealliance == 2) p1alliance = "black";
-
+        if (onealliance == 1) {
+            p1alliance = "white";
+            p2alliance = "black";
+        }
+        if (onealliance == 2) {
+            p1alliance = "black";
+            p2alliance = "white";
+        }
         System.out.println("PLAYER TWO:\nChoose player type.\n1.Player\t2.Computer");
         int twotype = in.nextInt();
         if (twotype == 1) p2type = "player";
-        if (twotype == 2) p2type = "computer";
+        if (twotype == 2) p2type = "computer";*/
 
-        System.out.println("Choose alliance.\n1.White\t2.Black");
-        int twoalliance = in.nextInt();
-        if (twoalliance == 1) p2alliance = "white";
-        if (twoalliance == 2) p2alliance = "black";
+        //TO SKIP SETTINGS:
+        p1type = "player";
+        p2type = "player";
+        p1alliance = "white";
+        p2alliance = "black";
 
         // assign player settings
         if (p1alliance.equals("white") && p1type.equals("player") && p2type.equals("player")) {
-            board = new Board(p1,p2);
-            List<Move> legalMoves = new LinkedList<>();
-            p1 = new WhitePlayer("bot","player",board,legalMoves);
-            p2 = new BlackPlayer("top","player",board,legalMoves);
+            this.p1 = new WhitePlayer("bot",1,"player");
+            this.p2 = new BlackPlayer("top",2,"player");
         }
         if (p1alliance.equals("white") && p1type.equals("player") && p2type.equals("computer")) {
-            board = new Board(p1,p2);
-            List<Move> legalMoves = new LinkedList<>();
-            p1 = new WhitePlayer("bot","player",board,legalMoves);
-            p2 = new BlackPlayer("top","computer",board,legalMoves);
+            p1 = new WhitePlayer("bot",1,"player");
+            p2 = new BlackPlayer("top",2,"computer");
         }
         if (p1alliance.equals("white") && p1type.equals("computer") && p2type.equals("player")) {
-            board = new Board(p1,p2);
-            List<Move> legalMoves = new LinkedList<>();
-            p1 = new WhitePlayer("top","computer",board,legalMoves);
-            p2 = new BlackPlayer("bot","player",board,legalMoves);
+            p1 = new WhitePlayer("top",1,"computer");
+            p2 = new BlackPlayer("bot",2,"player");
         }
         if (p1alliance.equals("white") && p1type.equals("computer") && p2type.equals("computer")) {
-            board = new Board(p1,p2);
-            List<Move> legalMoves = new LinkedList<>();
-            p1 = new WhitePlayer("top","computer",board,legalMoves);
-            p2 = new BlackPlayer("bot","computer",board,legalMoves);
+            p1 = new WhitePlayer("top",1,"computer");
+            p2 = new BlackPlayer("bot",2,"computer");
         }
     }
+    public static void main(String[] args) {new chessGame();}
 }

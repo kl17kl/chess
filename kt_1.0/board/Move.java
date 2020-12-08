@@ -1,5 +1,4 @@
 package board;
-
 import pieces.*;
 import player.*;
 import java.util.*;
