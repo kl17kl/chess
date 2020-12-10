@@ -52,21 +52,18 @@ public class Pawn extends Piece {
     }
 
     /**
-     * Generates a list of the piece's legal moves given its current position.
+     * Calculates the list of the piece's legal moves given its current position.
      * @return the integer array list of legal moves
      */
     @Override
-    public List<int[]> legalMoves() {
+    public void legalMoves() {
         // determine our move direction
-        if (this.board.getP1().getAlliance().equals(this.alliance)) {
-            if (this.board.getP1().getBoardSide().equals("top")) this.moveDirection = 1;
-            else this.moveDirection = -1;
-        }
-        else if (this.board.getP2().getBoardSide().equals("top")) this.moveDirection = 1;
-        else this.moveDirection = -1;
+        legalMoves = new LinkedList<>();
+
+        if (this.board.getP1().getAlliance().equals(this.alliance)) this.moveDirection = -1;
+        else this.moveDirection = 1;
 
         // stores all legal moves
-        this.legalMoves = new LinkedList<>();
         int row = this.position[0];
         int col = this.position[1];
 
@@ -74,30 +71,48 @@ public class Pawn extends Piece {
         if (row == 1 || row == 6) {
             // check if pawn can move +2 tiles
             if (row+2*moveDirection <= 7 && row+2*moveDirection >= 0 && !this.board.getTile(row+2*moveDirection,col).checkIfOccupied()) {
-                this.legalMoves.add(this.board.getTile(row,col).getCoords());
+                this.legalMoves.add(this.board.getTile(row+2*moveDirection,col).getCoords());
             }
         }
         // check if pawn can move +1 tile and is within bounds of the chess board
-        if (0 <= row+moveDirection && row+moveDirection <= board.rows) {
+        if (0 <= row+moveDirection && row+moveDirection <= 7) {
             if (!this.board.getTile(row+moveDirection,col).checkIfOccupied()) {
-                this.legalMoves.add(this.board.getTile(row, col).getCoords());
-
-                // check if pawn can move through an attack and is within bounds of the chess board
-                if (0 <= col - 1 && this.board.getTile(row + moveDirection, col - 1).checkIfOccupied()) {
-                    if (!this.board.getTile(row + moveDirection, col - 1).getPiece().getAlliance().equals(this.alliance) &&
-                    !this.board.getTile(row + moveDirection, col-1).getPiece().getName().equals("King")) {
-                        this.legalMoves.add(this.board.getTile(row, col).getCoords());
-                    }
-                }
-                if (col + 1 <= 7 && this.board.getTile(row + moveDirection, col + 1).checkIfOccupied()) {
-                    if (!this.board.getTile(row + moveDirection, col + 1).getPiece().getAlliance().equals(this.alliance) &&
-                            !this.board.getTile(row + moveDirection, col-1).getPiece().getName().equals("King")) {
-                        this.legalMoves.add(this.board.getTile(row, col).getCoords());
-                    }
-                }
+                this.legalMoves.add(this.board.getTile(row+moveDirection, col).getCoords());
             }
         }
+        // check if pawn can move through an attack and is within bounds of the chess board
+        if (0 <= col - 1 && row+moveDirection >= 0 && row+moveDirection<= 7 &&
+                this.board.getTile(row + moveDirection, col - 1).checkIfOccupied()) {
+            if (!this.board.getTile(row + moveDirection, col - 1).getPiece().getAlliance().equals(this.alliance) &&
+                    !this.board.getTile(row + moveDirection, col-1).getPiece().getName().equals("King")) {
+                this.legalMoves.add(this.board.getTile(row+moveDirection, col-1).getCoords());
+            }
+        }
+        if (col + 1 <= 7 && row+moveDirection >= 0 && row+moveDirection<= 7
+                && this.board.getTile(row + moveDirection, col + 1).checkIfOccupied()) {
+            if (!this.board.getTile(row + moveDirection, col + 1).getPiece().getAlliance().equals(this.alliance) &&
+                    !this.board.getTile(row + moveDirection, col+1).getPiece().getName().equals("King")) {
+                this.legalMoves.add(this.board.getTile(row+moveDirection, col+1).getCoords());
+            }
+        }
+        // check if pawn can do en-passant
+        if (0<= col - 1 && this.board.getTile(row, col-1).checkIfOccupied()
+                && this.board.getTile(row, col-1).getPiece().getName().equals("Pawn") && this.board.getTile(row, col-1).getPiece().getFlag()) {
+            if (row == 3) this.legalMoves.add(this.board.getTile(2,col - 1).getCoords());
+            if (row == 4) this.legalMoves.add(this.board.getTile(5,col - 1).getCoords());
+        }
+        if (col + 1 <= 7 && this.board.getTile(row, col+1).checkIfOccupied()
+                && this.board.getTile(row, col+1).getPiece().getName().equals("Pawn") && this.board.getTile(row, col+1).getPiece().getFlag()) {
+            if (row == 3) this.legalMoves.add(this.board.getTile(2,col + 1).getCoords());
+            if (row == 4) this.legalMoves.add(this.board.getTile(5,col + 1).getCoords());
+        }
+    }
+
+    public List<int[]> getLegalMoves() {
         return this.legalMoves;
     }
 
+    public void setNewLegals(List<int[]> legals) {
+        this.legalMoves = legals;
+    }
 }

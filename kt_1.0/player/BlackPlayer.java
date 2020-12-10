@@ -24,7 +24,7 @@ public class BlackPlayer extends Player {
     @Override
     public void generatePieces(int pawnRow, int pieceRow, Board board) {
         // add all the pawns to the list
-        for (int i = 0; i< 8; i++) {
+        for (int i = 0; i<8; i++) {
             int coords[] = new int[]{pawnRow,i};
             this.pieces.add(i, new Pawn(coords, "black", board));
         }
@@ -68,6 +68,10 @@ public class BlackPlayer extends Player {
         }
     }
 
+    public void addPiece(Piece piece) {
+        this.pieces.add(piece);
+    }
+
     /** Get the player's list of active pieces. */
     @Override
     public List<Piece> getPieces() {
@@ -83,7 +87,7 @@ public class BlackPlayer extends Player {
     /** Get the alliance of the player (white/black) */
     @Override
     public String getAlliance() {
-        return "black";
+        return "white";
     }
 
     @Override
@@ -92,9 +96,12 @@ public class BlackPlayer extends Player {
     /** Check if the player is in check. */
     @Override
     public boolean isInCheck(Board board) {
+        List<int[]> legalMoves;
         for (Piece opponentPiece : board.getOpponent(this).getPieces()) {
-            for (int[] opponentMove : opponentPiece.legalMoves()) {
-                if (opponentMove.equals(this.getPiece(12).getPosition())) return true;
+            legalMoves = opponentPiece.getLegalMoves();
+            //System.out.println(opponentPiece.getName());
+            for (int[] opponentMove : legalMoves) {
+                if (Arrays.equals(opponentMove, this.getPiece(12).getPosition())) return true;
             }
         }
         return false;
@@ -103,25 +110,25 @@ public class BlackPlayer extends Player {
     /** Check if the player is in checkmate. */
     @Override
     public boolean isInCheckMate(Board board) {
-        return this.isInCheck(board) && !hasEscapeMoves();
+        return this.isInCheck(board) && !hasEscapeMoves(board);
     }
 
     /** Check if the player is in stalemate. */
     @Override
     public boolean isInStaleMate(Board board) {
-        return !this.isInCheck(board) && !hasEscapeMoves();
+        return !this.isInCheck(board) && !hasEscapeMoves(board) && !playerHasMoves();
     }
 
     @Override
-    public boolean hasEscapeMoves() {
+    public boolean hasEscapeMoves(Board board) {
         // 1) Can we move the King out of check?
-        List<int[]> kingMoves = this.getPiece(12).legalMoves();
-        Player opponent = this.board.getOpponent(this);
+        List<int[]> kingMoves = this.getPiece(12).getLegalMoves();
+        Player opponent = board.getOpponent(this);
 
         // check if King has any legal moves that aren't any of the opponent's legal moves
         for (Piece p : opponent.getPieces()) {
-            for (int[] opponentMove : p.legalMoves()) {
-                for (int[] kingMove : this.getPiece(12).legalMoves()) {
+            for (int[] opponentMove : p.getLegalMoves()) {
+                for (int[] kingMove : this.getPiece(12).getLegalMoves()) {
                     if (opponentMove.equals(kingMove)) kingMoves.remove(kingMove);
                 }
             }
@@ -130,12 +137,12 @@ public class BlackPlayer extends Player {
             // 2) Can we block the attacking piece from the King?
         else {
             for (Piece piece : this.getPieces()) {
-                for (int[] move : piece.legalMoves()) {
+                for (int[] move : piece.getLegalMoves()) {
                     for (Piece opponentPiece : opponent.getPieces()) {
-                        for (int[] opponentMove : opponentPiece.legalMoves()) {
+                        for (int[] opponentMove : opponentPiece.getLegalMoves()) {
                             // if a piece's legal move = opponent piece's legal move
                             if (opponentMove.equals(move)) {
-                                Board transitionBoard = this.board;
+                                Board transitionBoard = board;
                                 if (transitionBoard.getTile(move[0],move[1]).checkIfOccupied()) {
                                     transitionBoard.getTile(move[0],move[1]).setPiece(piece);
                                 }
@@ -148,6 +155,21 @@ public class BlackPlayer extends Player {
                     }
                 }
             }
+        }
+        return false;
+    }
+
+    public Board makeMove(int[] move, Board board) {
+        Piece piece = board.getTile(move[0],move[1]).getPiece();
+        Move aMove = new Move(board, piece, move);
+        board = aMove.movePiece();
+        piece.setPosition(move[2],move[3]);
+        return board;
+    }
+
+    private boolean playerHasMoves() {
+        for (Piece p : this.pieces) {
+            if (!p.getName().equals("King") && p.getLegalMoves().size() > 0 ) return true;
         }
         return false;
     }

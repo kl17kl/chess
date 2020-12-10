@@ -42,7 +42,8 @@ public class Knight extends Piece {
      * @return the integer array list of legal moves
      */
     @Override
-    public List<int[]> legalMoves() {
+    public void legalMoves() {
+        legalMoves = new LinkedList<>();
         // stores all legal moves
         this.legalMoves = new LinkedList<>();
         int row = this.position[0];
@@ -53,7 +54,6 @@ public class Knight extends Piece {
         checkJumps(row, col, 0, 2);  // east jumps
         checkJumps(row, col, 2, 0);  // south jumps
         checkJumps(row, col, 0, -2); // west jumps
-        return this.legalMoves;
     }
 
     /**
@@ -69,16 +69,24 @@ public class Knight extends Piece {
             // if row is within the bounds of the chess board
             if (0 <= row + rowLength && row + rowLength <= 7) {
                 // if col is within bounds and is not occupied with the same alliance
-                if (0 <= col - 1 && !this.board.getTile(row + rowLength, col - 1).getPiece().getAlliance().equals(this.alliance)) {
-                    // cannot take the opponent's King piece
-                    if (!this.board.getTile(row + rowLength, col - 1).getPiece().getName().equals("King")) {
+                if (0 <= col - 1) {
+                    if (this.board.getTile(row + rowLength, col - 1).checkIfOccupied() &&
+                            !this.board.getTile(row + rowLength, col - 1).getPiece().getAlliance().equals(this.alliance)
+                            && !this.board.getTile(row + rowLength, col - 1).getPiece().getName().equals("King")) {
                         this.legalMoves.add(this.board.getTile(row + rowLength, col - 1).getCoords());
                     }
+                    if (!this.board.getTile(row + rowLength, col - 1).checkIfOccupied()) {
+                        this.legalMoves.add(this.board.getTile(row + rowLength, col -1 ).getCoords());
+                    }
                 }
-                if (col + 1 <= 7 && !this.board.getTile(row + rowLength, col + 1).getPiece().getAlliance().equals(this.alliance)) {
-                    // cannot take the opponent's King piece
-                    if (!this.board.getTile(row + rowLength, col + 1).getPiece().getName().equals("King")) {
+                if (col + 1 <= 7) {
+                    if (this.board.getTile(row + rowLength, col + 1).checkIfOccupied() &&
+                            !this.board.getTile(row + rowLength, col + 1).getPiece().getAlliance().equals(this.alliance)
+                            && !this.board.getTile(row + rowLength, col + 1).getPiece().getName().equals("King")) {
                         this.legalMoves.add(this.board.getTile(row + rowLength, col + 1).getCoords());
+                    }
+                    if (!this.board.getTile(row + rowLength, col + 1).checkIfOccupied()) {
+                        this.legalMoves.add(this.board.getTile(row + rowLength, col +1 ).getCoords());
                     }
                 }
             }
@@ -88,15 +96,23 @@ public class Knight extends Piece {
             // if col is within the bounds of the chess board
             if (0 <= col + colLength && col + colLength <= 7) {
                 // if row is within bounds and is not occupied with the same alliance
-                if (0 <= row - 1 && !this.board.getTile(row - 1, col + colLength).getPiece().getAlliance().equals(this.alliance)) {
-                    // cannot take the opponent's King piece
-                    if (!this.board.getTile(row - 1, col + colLength).getPiece().getName().equals("King")) {
+                if (0 <= row - 1 ) {
+                    if (this.board.getTile(row - 1, col + colLength).checkIfOccupied() &&
+                            !this.board.getTile(row - 1, col + colLength).getPiece().getAlliance().equals(this.alliance) &&
+                            !this.board.getTile(row - 1, col + colLength).getPiece().getName().equals("King")) {
+                        this.legalMoves.add(this.board.getTile(row - 1, col + colLength).getCoords());
+                    }
+                    if (!this.board.getTile(row - 1, col + colLength).checkIfOccupied()) {
                         this.legalMoves.add(this.board.getTile(row - 1, col + colLength).getCoords());
                     }
                 }
-                if (row + 1 <= 7 && !this.board.getTile(row + 1, col + colLength).getPiece().getAlliance().equals(this.alliance)) {
-                    // cannot take the opponent's King piece
-                    if (!this.board.getTile(row + 1, col + colLength).getPiece().getName().equals("King")) {
+                if (row + 1 <= 7 ) {
+                    if (this.board.getTile(row + 1, col + colLength).checkIfOccupied() &&
+                            !this.board.getTile(row + 1, col + colLength).getPiece().getAlliance().equals(this.alliance) &&
+                            !this.board.getTile(row + 1, col + colLength).getPiece().getName().equals("King")) {
+                        this.legalMoves.add(this.board.getTile(row + 1, col + colLength).getCoords());
+                    }
+                    if (!this.board.getTile(row + 1, col + colLength).checkIfOccupied()) {
                         this.legalMoves.add(this.board.getTile(row + 1, col + colLength).getCoords());
                     }
                 }
@@ -104,4 +120,11 @@ public class Knight extends Piece {
         }
     }
 
+    public List<int[]> getLegalMoves() {
+        return this.legalMoves;
+    }
+
+    public void setNewLegals(List<int[]> legals) {
+        this.legalMoves = legals;
+    }
 }

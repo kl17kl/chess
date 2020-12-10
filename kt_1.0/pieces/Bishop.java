@@ -42,9 +42,10 @@ public class Bishop extends Piece {
      * @return the integer array list of legal moves
      */
     @Override
-    public List<int[]> legalMoves() {
+    public void legalMoves() {
+        legalMoves = new LinkedList<>();
         // stores all legal moves
-        this.legalMoves = new LinkedList<>();
+       // legalMoves = new LinkedList<>();
         int row = this.position[0];
         int col = this.position[1];
 
@@ -53,7 +54,6 @@ public class Bishop extends Piece {
         checkDiagonals(row,col,-1,1);  // check NE direction
         checkDiagonals(row,col,1,1);   // check SE direction
         checkDiagonals(row,col,1,-1);  // check SW direction
-        return this.legalMoves;
     }
 
     /**
@@ -64,30 +64,32 @@ public class Bishop extends Piece {
      * @param colIncr  the horizontal direction of the diagonal (right/left)
      */
     private void checkDiagonals(int row, int col, int rowIncr, int colIncr) {
-        boolean meetsOpposite = false;
         // initially check within the bounds of the chess board
-        if (0 <= row+rowIncr && row+rowIncr <= board.rows && 0 <= col+colIncr && col+colIncr <= board.cols) {
+        while (0 <= row+rowIncr && row+rowIncr <= 7 && 0 <= col+colIncr && col+colIncr <= 7) {
+            // if empty tile
+            if (!this.board.getTile(row + rowIncr, col + colIncr).checkIfOccupied()) {
+                this.legalMoves.add(new int[]{row + rowIncr, col + colIncr});
+            }
+            // attacking enemy piece
+            if (this.board.getTile(row + rowIncr, col + colIncr).checkIfOccupied()
+                    && !this.board.getTile(row + rowIncr, col + colIncr).getPiece().getAlliance().equals(this.alliance) &&
+                    !this.board.getTile(row + rowIncr, col + colIncr).getPiece().getName().equals("King")) {
+                this.legalMoves.add(new int[]{row + rowIncr, col + colIncr});
+                break;
+            }
+            if (this.board.getTile(row + rowIncr, col + colIncr).checkIfOccupied()
+                    && this.board.getTile(row + rowIncr, col + colIncr).getPiece().getAlliance().equals(this.alliance))
+                break;
+            // look at the next diagonal tile
             row += rowIncr;
             col += colIncr;
-            // if unoccupied or if occupied by opposing alliance
-            while (!this.board.getTile(row,col).checkIfOccupied() || !meetsOpposite &&
-                    !this.board.getTile(row,col).getPiece().getAlliance().equals(this.alliance)) {
-                // prevent this piece from being able to jump over an opposing alliance piece
-                if (!this.board.getTile(row,col).getPiece().getAlliance().equals(this.alliance)) {
-                    meetsOpposite = true;
-                }
-                // cannot attack the opponent's King piece.
-                if (!this.board.getTile(row,col).getPiece().getName().equals("King")) {
-                    this.legalMoves.add(this.board.getTile(row,col).getCoords());
-                }
-
-                // look at the next diagonal tile
-                if (0 <= row+rowIncr && row+rowIncr <= board.rows && 0 <= col+colIncr && col+colIncr <= board.cols) {
-                    row += rowIncr;
-                    col += colIncr;
-                }
-                else break;
-            }
         }
+    }
+    public List<int[]> getLegalMoves() {
+        return this.legalMoves;
+    }
+
+    public void setNewLegals(List<int[]> legals) {
+        this.legalMoves = legals;
     }
 }

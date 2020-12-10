@@ -8,6 +8,7 @@ public abstract class Piece {
     private String alliance; // white or black
     private Board board;
     private Boolean enpassFlag; // En-passant flag
+    private List<int[]> legalMoves;
 
     public Piece(int[] position, String alliance, Board board) {
         this.position = position;
@@ -30,7 +31,11 @@ public abstract class Piece {
     public abstract int[] getPosition();
 
     /** Generates a list of the piece's legal moves given its current position. */
-    public abstract List<int[]> legalMoves();
+    public abstract void legalMoves();
+
+    public abstract List<int[]> getLegalMoves();
+
+    public abstract void setNewLegals(List<int[]> legals);
 
     public void setFlag(boolean val) {
         this.enpassFlag = false;

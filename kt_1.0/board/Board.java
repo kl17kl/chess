@@ -149,12 +149,12 @@ public class Board {
 
     /** Set an empty tile at a given position. */
     public void setTile(EmptyTile tile, int[] position) {
-        this.boardTiles[position[0]][position[1]] = new EmptyTile(position);
+        this.boardTiles[position[0]][position[1]] = tile;
     }
 
     /** Set an occupied tile at a given position. */
     public void setTile(OccupiedTile tile, int[] position) {
-        this.boardTiles[position[0]][position[1]] = new OccupiedTile(position);
+        this.boardTiles[position[0]][position[1]] = tile;
     }
 
     /** Gets the tile at a given position. */

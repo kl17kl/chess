@@ -30,18 +30,16 @@ public class Move {
             newBoard.addDeadPiece(destinationTile.getPiece());
         }
         // update destination tile with moved piece
-        Piece movedPiece = destinationTile.getPiece();
-        newBoard.getTile(this.destination[2],this.destination[3]).setPiece(movedPiece);
-
-        // set empty tile at piece's initial tile
+        Piece movedPiece = initialTile.getPiece();
         int[] startCoords = new int[]{this.destination[0],this.destination[1]};
+        int[] endCoords = new int[]{this.destination[2],this.destination[3]};
         newBoard.setTile(new EmptyTile(startCoords),startCoords);
+        newBoard.setTile(new EmptyTile(endCoords), endCoords);
+        OccupiedTile newTile = new OccupiedTile(endCoords);
+        newTile.setPiece(movedPiece);
+        newBoard.setTile(newTile,endCoords);
+
         return newBoard;
     }
-
-    public void checkCastled() {
-
-    }
-
 
 }
